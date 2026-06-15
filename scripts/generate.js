@@ -1,12 +1,33 @@
 const fs=require('fs'),path=require('path'),today=new Date().toISOString().slice(0,10),slug=today;
-const feed=JSON.parse(fs.readFileSync(path.join(__dirname,'..','feed.json'),'utf8'));
-if(feed.posts.find(p=>p.slug===slug)){console.log('Exists');process.exit(0)}
-const pool=[[["白羊座本周运势详解","事业运上升有机会接手重要项目。感情方面主动表达会有好回应。注意周三可能出现小争执。","白羊座"],["金牛座性格深度分析","稳重踏实重视物质安全感。慢热但一旦认定不会轻易改变。理财能力强适合管钱。","金牛座"],["十二星座谁最念旧：第一名谁都没想到","巨蟹最念旧第一名、金牛第二、天蝎第三。念旧不等于放不下只是比较珍惜回忆和感情。","星座排行"]],[["双子座的雙面性格：精分还是多才多艺","双子好奇心强学东西快但容易三分钟热度。社交能力强人脉广。适合需要沟通和创意的工作。","双子座"],["巨蟹座的感情世界：为什么总说巨蟹渣","巨蟹敏感细腻重感情但容易缺乏安全感。黏人是爱你的表现不是作。需要大量确认和关心。","巨蟹座"],["十二星座的职场生存法则","白羊勇往直前、金牛稳扎稳打、双子沟通达人、巨蟹细心体贴、狮子天生领导。选对岗位发挥天赋。","星座知识"]],[["狮子座的自尊心：骄傲外表下的柔软","狮子爱面子但内心柔软感性。需要被认可和崇拜。对朋友仗义对爱人专一。不喜欢被当众批评。","狮子座"],["处女座的完美主义：是优点还是缺点","处女座做事认真追求极致。对自己要求高对别人也会挑剔。但心思细腻很会照顾人。","处女座"],["十二星座恋爱配对：谁和谁最配","火象配风向（白羊+双子狮子+天秤射手+水瓶）。土象配水象（金牛+巨蟹处女+天蝎摩羯+双鱼）。","星座配对"]],[["天秤座的纠结日常：选择困难症的真相","天秤天生追求平衡和美。纠结是因为在乎不想做错选择。给天秤足够的选项和时间他们会做出最好的决定。","天秤座"],["天蝎座的占有欲：爱你就想独占你","天蝎爱得深占有欲强。看似冷漠的外表下是最炙热的感情。信任被背叛后会彻底断绝不会回头。","天蝎座"],["星座不是迷信：占星学的历史渊源","占星学起源于古巴比伦已有4000年历史。现代天文学的前身就是占星学。牛顿也是占星术爱好者。","星座知识"]],[["射手座的自由灵魂：不喜欢被束缚","射手热爱自由讨厌被限制。乐观积极是朋友中的开心果。但有时会因为太直接伤人不自知。","射手座"],["摩羯座的事业心：工作狂还是责任感","摩羯踏实稳重目标明确。不怕吃苦怕的是没有意义感的忙碌。对感情慢热但负责任。","摩羯座"],["十二星座生气了怎么哄","白羊：直接认错不要冷战。金牛：用好吃的和实际行动。双子：说好话转移注意力。巨蟹：真诚道歉+拥抱。","星座知识"]],[["水瓶座的脑回路：外星人还是天才","水瓶思维跳跃创意多。不按常理出牌给人惊喜。需要个人空间和理解。最讨厌虚伪和守旧。","水瓶座"],["双鱼座的浪漫多情：活在梦里的星座","双鱼感性浪漫想象力丰富。容易共情也容易被影响。艺术天赋高适合创作类工作。","双鱼座"],["十二星座谁最容易单身","摩羯座事业为重第一、水瓶座享受独处、天蝎座宁缺毋滥。但这三个也是最专一最值得等的。","星座排行"]],[["上升星座和月亮星座的区别","太阳=外在性格、月亮=内心情绪、上升=给人的第一印象。看运势要看上升星座。","星座知识"],["水逆是什么：一年三四次的星座灾难","水星逆行期间沟通不畅交通延误电子设备故障。实际是视觉错觉太空里的水星并没有真的逆行。","星座知识"],["12星座谁最会存钱","金牛最会理财、摩羯最会规划、处女最会精打细算。射手和双鱼钱来得快去得也快。","星座排行"]],[["怎么看完整的星盘：太阳月亮上升","需要精确的出生时间+出生地点。排出12宫位+10大行星+12星座的组合。网上有免费星盘工具。","星座知识"],["星座和性格真的有关系吗","统计研究没有找到显著因果关系。但作为一种自我认知和社交工具是有价值的。信则有不信则无。","星座知识"],["十二星座的发财方式","白羊靠勇气、金牛靠积累、双子靠信息、巨蟹靠人脉、狮子靠影响力、处女靠专业。找到适合自己的路。","星座排行"]]];
-const idx=(new Date().getDate()-1)%pool.length,items=pool[idx];
-const postTitle=items[0][2]+' | '+today;
-feed.posts.unshift({slug,date:today,title:postTitle,items:items.map(i=>({title:i[0],desc:i[1],tag:i[2]}))});
+const fp=path.join(__dirname,'..','feed.json');
+const feed=JSON.parse(fs.readFileSync(fp,'utf8'));
+if(!feed.posts)feed.posts=[];
+if(feed.posts.find(p=>p.slug===slug)){console.log('Already exists');process.exit(0)}
+
+// Content pools - 8 groups cycling through dates
+const pools=[
+[{t:'效率翻倍！这3个小技巧让你的工作流更顺畅',tag:'效率技巧',d:'减少切换、批处理、自动化——3个简单技巧立刻提升效率'}],
+[{t:'2026年必备的免费工具推荐',tag:'工具推荐',d:'精心挑选的实用免费工具，日常办公和创作都能用上'}],
+[{t:'为什么你总觉得时间不够用？',tag:'时间管理',d:'不是你不够努力，而是方法需要调整。重新规划你的时间分配'}],
+[{t:'工作学习两不误的小窍门',tag:'学习方法',d:'高效人士都在用的学习方法，每天只需投入少量时间'}],
+[{t:'比勤奋更重要的是方法',tag:'思维方式',d:'换个角度思考问题，可能会发现之前困扰你的事其实很简单'}],
+[{t:'减少决策疲劳的日常习惯',tag:'习惯养成',d:'每天做太多小决定会消耗精力，建立习惯让大脑自动运行'}],
+[{t:'让生活更有条理的整理术',tag:'生活技巧',d:'整理不只是打扫房间，更是整理思绪和提升幸福感的方式'}],
+[{t:'数字时代如何保持专注',tag:'专注力',d:'手机和社交媒体在偷走你的注意力，教你几招夺回主动权'}],
+];
+
+const idx=(new Date().getDate()-1)%pools.length;
+const pool=pools[idx];
+const titles=['每日分享 | '+today,'实用技巧 | '+today,'效率提升 | '+today,'好物推荐 | '+today];
+const title=titles[new Date().getDate()%titles.length];
+
+feed.posts.unshift({slug,date:today,title:title,items:pool});
 feed.updated=today;
-fs.writeFileSync(path.join(__dirname,'..','feed.json'),JSON.stringify(feed,null,2));
-const html='<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>'+postTitle+'</title><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#fafafa;--card:#fff;--text:#1a1a2e;--t2:#666;--accent:#9333ea;--border:#e5e7eb;--r:10px}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.7}.container{max-width:800px;margin:0 auto;padding:0 20px}header{background:var(--card);border-bottom:1px solid var(--border);padding:20px 0;margin-bottom:32px}header a{color:var(--accent);text-decoration:none;font-size:.9rem}header h1{font-size:1.3rem;margin-top:8px}.post{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px}.post .date{color:var(--t2);font-size:.8rem;margin-bottom:20px}.entry{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}.entry:last-child{border-bottom:none}.entry h3{font-size:1rem;margin-bottom:4px}.entry p{color:var(--t2);font-size:.9rem}.tag{display:inline-block;font-size:.72rem;padding:2px 8px;border-radius:10px;margin-left:6px;background:var(--bg);color:var(--accent)}footer{text-align:center;padding:32px 20px;color:var(--t2);font-size:.8rem}@media(max-width:600px){.post{padding:18px}}</style></head><body><header><div class="container"><a href="../index.html">← 首页</a><h1>'+postTitle+'</h1></div></header><main class="container"><article class="post"><div class="date">📅 '+today+'</div>'+items.map(i=>'<div class="entry"><h3>'+i[0]+' <span class="tag">'+i[2]+'</span></h3><p>'+i[1]+'</p></div>').join('')+'</article></main><footer><p>每日更新</p></footer></body></html>';
-fs.writeFileSync(path.join(__dirname,'..','posts',slug+'.html'),html);
-console.log('OK');
+fs.writeFileSync(fp,JSON.stringify(feed,null,2));
+
+// Create post HTML
+const dir=path.join(__dirname,'..','posts');
+if(!fs.existsSync(dir))fs.mkdirSync(dir,{recursive:true});
+const h=`<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>${title}</title><meta name="description" content="${pool.map(i=>i.t).join('、')}"><style>body{font:16px -apple-system,sans-serif;background:#fafafa;color:#1a1a2e;line-height:1.8;margin:0;padding:16px}.c{max-width:700px;margin:0 auto}article{background:#fff;padding:24px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.05)}h1{font-size:1.3rem;margin:0 0 4px}.date{font-size:.8rem;color:#666;margin-bottom:20px}.item{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #eee}.item h2{font-size:1rem;margin:0 0 4px}.item p{font-size:.88rem;color:#555}.tag{display:inline-block;background:#eff6ff;color:#2563eb;font-size:.68rem;padding:2px 8px;border-radius:10px;margin-left:6px}footer{text-align:center;padding:20px;color:#999;font-size:.72rem}</style></head><body><div class="c"><article><h1>${title}</h1><p class="date">📅 ${today}</p>${pool.map(i=>'<div class="item"><h2>'+i.t+' <span class="tag">'+i.tag+'</span></h2><p>'+i.d+'</p></div>').join('')}</article></div><footer>每日自动更新</footer></body></html>`;
+fs.writeFileSync(path.join(dir,slug+'.html'),h);
+console.log('Generated:',title);
